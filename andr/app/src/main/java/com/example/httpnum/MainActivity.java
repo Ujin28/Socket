@@ -1,6 +1,7 @@
 package com.example.httpnum;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import android.os.Bundle;
 import android.view.View;
@@ -19,8 +20,6 @@ import io.socket.emitter.Emitter;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    //private JSONObject number;
-    //private String number;
 
     private Socket mSocket;
     {
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //mSocket.on("result", onNewMessage);
+        mSocket.on("result", result);
         mSocket.connect();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -47,21 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 String num = binding.num.getText().toString();
                 mSocket.emit("number", num);
 
-                String result;
-                //mSocket.on("result", result);
-
-                /**mSocket.on(Socket.EVENT_CONNECT, (Object... objects) -> {
-                    JSONObject preJsonObject = new JSONObject();
-                    preJsonObject.put("roomName", myroom);
-                    JSONObject jsonObject = new JSONObject(preJsonObject.toString());
-                    mSocket.emit("joinRoom",jsonObject);
-                }).on("recMsg", (Object... objects) -> {
-                    System.out.println(objects[0]);
-                    JsonParser jsonParsers = new JsonParser();
-                    JSONObject jsonObject = (JSONObject) jsonParsers.parse(objects[0] + "");
-                    jTextArea.append(jsonObject.get("comment").getAsString() + "");
-                });**/
-
             }
 
         });
@@ -69,28 +53,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //import io.socket.emitter.Emitter;
-
-    /*private Emitter.Listener onNewMessage = new Emitter.Listener() {
+    private Emitter.Listener result = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    String data = (JSONObject) args[0];
-                    String username;
-                    String message;
-                    try {
-                        username = data.getString("username");
-                        message = data.getString("message");
-                    } catch (JSONException e) {
-                        return;
-                    }
-
-                    // add the message to view
-                    addMessage(username, message);
+                    binding.result.setText(args[0].toString());
                 }
             });
         }
-    };*/
+    };
 }
